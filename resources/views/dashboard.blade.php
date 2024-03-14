@@ -13,10 +13,13 @@
 
 <body class="bg-black h-screen flex flex-col">
 
+    
     <!-- Ligne de texte -->
+    @if ($total_2022 == null)
     <div class="text-white my-8 mx-auto text-lg">
         <h1>Sur le territoire Français de août 2021 à août 2022, c'est 4 225 596 crimes et délits qui ont été commis !</h1>
     </div>
+    @endif
     
     
     <!-- Conteneur pour les éléments actuels -->
@@ -43,23 +46,14 @@
         
 
         <!-- Contenu à afficher lorsqu'un département est sélectionné -->
-        <div id="departmentContent" class="hidden">
-            <div class="text-white mt-4 mx-auto">
-                <p>C'est pour l'instant $nbrtotal crimes et délits qui ont été commis en $nomDepartement ! Janvier à Août 2022 </p>
-            </div>
-
-            <div class="text-white mt-4 mx-auto">
-                <p>En $année c'est $nbrtotalAn crimes et délits qui ont été commis en $nomDepartement ! </p>
-            </div>
-
-            <button class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700">Voir les détails</button>
-
-            <!-- Affiche un tableau qui montre les familles par année 10 dernières année possibilité de mettre qu'une seule année pagination et comparatif-->
-
-            <div class="text-white mt-4 mx-auto">
-                <p>Graphique dynamique & graphique pas dynamique</p>
-            </div>
+        
+        @if ($total_2022 != null)
+        <div id="departmentContent" class="text-white text-center mt-4 mx-auto">
+            <p class="text-5xl font-bold">{{$total_2022}}</p>
+            <p class="text-base">crimes et délits qui ont été commis de Janvier à Août 2022</p>
         </div>
+        
+        @endif  
     </div>
 
     <script>
@@ -93,9 +87,8 @@
                 .style("fill", "lightblue")
                 .style("stroke", "white")
                 .style("stroke-width", 1)
-                // Ajouter des événements de clic
+                // Ajouter des événements de clics
                 .on("click", function(d) {
-                    console.log(d)
                     clicked = true; // Marquer comme cliqué
                     // Réinitialiser la couleur de tous les départements
                     svg.selectAll("path")
@@ -106,11 +99,13 @@
                     var departmentImageUrl = "images/" + d.target.__data__.properties.code + ".png";
 
                     d3.select("#departmentName").text(departmentName).classed("hidden", false);
-                    d3.select("#departmentNumber").text(departmentNumber).classed("hidden", false); // Affichage du numéro du département
-                    d3.select("#departmentNumberContainer").classed("hidden", false); // Affichage du conteneur du numéro du département
+                    d3.select("#departmentNumber").text(departmentNumber).classed("hidden", false); 
+                    d3.select("#departmentNumberContainer").classed("hidden", false); 
                     d3.select("#departmentImage").attr("src", departmentImageUrl).classed("hidden", false);
-                    d3.select("#departmentContent").classed("hidden", false); // Afficher le contenu du département
+                    d3.select("#departmentContent").classed("hidden", false); 
                     d3.select(this).style("fill", "red");
+
+                    window.location.href = "/dashboard/" + departmentNumber;
                 })
                 // Ajouter des événements de survol et de style de survol (facultatif)
                 .on("mouseover", function(d) {
@@ -118,11 +113,10 @@
                         var departementCode = d.target.__data__.properties.code;
                         var departmentName = d.target.__data__.properties.nom;
                         var departmentNumber = d.target.__data__.properties.code;
-                        var departmentImageUrl = "images/" + d.target.__data__.properties.code + ".png";
+                        var departmentImageUrl = "http://localhost:8000/images/" + d.target.__data__.properties.code + ".png";
 
                         d3.select("#departmentName").text(departmentName).classed("hidden", false);
-                        d3.select("#departmentNumber").text(departmentNumber).classed("hidden", false); // Affichage du numéro du département
-                        d3.select("#departmentNumberContainer").classed("hidden", false); // Affichage du conteneur du numéro du département
+                        d3.select("#departmentNumberContainer").classed("hidden", false); 
                         d3.select("#departmentImage").attr("src", departmentImageUrl).classed("hidden", false);
                         d3.select(this).style("fill", "red");
                     }
@@ -130,12 +124,17 @@
                 .on("mouseout", function() {
                     if (!clicked) {
                         d3.select("#departmentName").text("").classed("hidden", true);
-                        d3.select("#departmentNumber").text("").classed("hidden", true); // Masquage du numéro du département
-                        d3.select("#departmentNumberContainer").classed("hidden", true); // Masquage du conteneur du numéro du département
+                        d3.select("#departmentNumber").text("").classed("hidden", true); 
+                        d3.select("#departmentNumberContainer").classed("hidden", true); 
                         d3.select("#departmentImage").attr("src", "").classed("hidden", true);
                         d3.select(this).style("fill", "lightblue");
                     }
                 });
+
+                
+
+                
+
         });
 
     </script>

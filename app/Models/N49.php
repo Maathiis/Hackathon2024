@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class 49
  * 
  * @property int|null $Index
- * @property string|null $libellé index
+ * @property string|null $libelle_index
  * @property int|null $_2022_08
  * @property int|null $_2022_07
  * @property int|null $_2022_06
@@ -342,7 +342,7 @@ class N49 extends Model
 	public $incrementing = false;
 	public $timestamps = false;
 
-	protected $casts = [
+	public $casts = [
 		'Index' => 'int',
 		'_2022_08' => 'int',
 		'_2022_07' => 'int',
@@ -666,9 +666,9 @@ class N49 extends Model
 		'_1996_01' => 'int'
 	];
 
-	protected $fillable = [
+	public $fillable = [
 		'Index',
-		'libellé index',
+		'libelle_index',
 		'_2022_08',
 		'_2022_07',
 		'_2022_06',

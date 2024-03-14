@@ -23,15 +23,16 @@ Route::get('/test', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('dashboard', ['total_2022' => null]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/domtom', [ProfileController::class, 'domtom'])->name('domtom');
-    Route::get('/departement/{id}', [ProfileController::class, 'departement'])->name('departement');
+    Route::get('/dashboard/{departmentNumber}', [ProfileController::class, 'N']);
+
+    
 
 
 });

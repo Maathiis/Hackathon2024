@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
+use App\Models\N49;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
+use App\Http\Requests\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -16,6 +17,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+
         return view('profile.edit', [
             'user' => $request->user(),
         ]);
@@ -58,6 +60,24 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
-    
+    public function N ($departmentNumber)
+    {
+        $nomClasse = "App\Models\N".$departmentNumber; 
+        // Récupérer toutes les lignes de la table
+        $donnees = $nomClasse::all();
+                
+        $total_2022 = 0;
 
+        foreach ($donnees as $element) {
+            for ($i = 8; $i >= 1; $i--) {
+                $index = "_2022_" . sprintf("%02d", $i);
+                if (isset($element[$index]) && is_numeric($element[$index])) {
+                    $total_2022 += $element[$index];
+                }
+            }
+        }
+
+        // Passer les données à la vue
+        return view('dashboard', ['donnees' => $donnees, 'total_2022' => $total_2022]);
+    }
 }
