@@ -13,6 +13,12 @@
 
 <body class="bg-black h-screen flex flex-col">
 
+    <!-- Ligne de texte -->
+    <div class="text-white my-8 mx-auto text-lg">
+        <h1>Sur le territoire Français de août 2021 à août 2022, c'est 4 225 596 crimes et délits qui ont été commis !</h1>
+    </div>
+    
+    
     <!-- Conteneur pour les éléments actuels -->
     <div class="flex-grow flex flex-col overflow-auto">
         <!-- Conteneur pour la carte et les informations du département -->
@@ -34,10 +40,7 @@
             </div>
         </div>
 
-        <!-- Ligne de texte -->
-        <div class="text-white mt-4 mx-auto">
-            <h2>Sur le territoire Français de août 2021 à août 2022, c'est 4 225 596 crimes et délits qui ont été commis !</h2>
-        </div>
+        
 
         <!-- Contenu à afficher lorsqu'un département est sélectionné -->
         <div id="departmentContent" class="hidden">
@@ -78,6 +81,8 @@
             .attr("width", width)
             .attr("height", height);
 
+        var clicked = false; // Variable pour suivre si un département a été cliqué
+
         // Charger les données géographiques de la France métropolitaine
         d3.json("https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements.geojson").then(function(geojson) {
             // Dessiner les départements métropolitains
@@ -88,8 +93,13 @@
                 .style("fill", "lightblue")
                 .style("stroke", "white")
                 .style("stroke-width", 1)
-                // Ajouter des événements de survol et de style de survol
-                .on("mouseover", function(d) {
+                // Ajouter des événements de clic
+                .on("click", function(d) {
+                    console.log(d)
+                    clicked = true; // Marquer comme cliqué
+                    // Réinitialiser la couleur de tous les départements
+                    svg.selectAll("path")
+                        .style("fill", "lightblue");
                     var departementCode = d.target.__data__.properties.code;
                     var departmentName = d.target.__data__.properties.nom;
                     var departmentNumber = d.target.__data__.properties.code;
@@ -101,19 +111,30 @@
                     d3.select("#departmentImage").attr("src", departmentImageUrl).classed("hidden", false);
                     d3.select("#departmentContent").classed("hidden", false); // Afficher le contenu du département
                     d3.select(this).style("fill", "red");
+                })
+                // Ajouter des événements de survol et de style de survol (facultatif)
+                .on("mouseover", function(d) {
+                    if (!clicked) {
+                        var departementCode = d.target.__data__.properties.code;
+                        var departmentName = d.target.__data__.properties.nom;
+                        var departmentNumber = d.target.__data__.properties.code;
+                        var departmentImageUrl = "images/" + d.target.__data__.properties.code + ".png";
 
-                    // Descendre la page automatiquement lorsqu'un département est survolé
-                    $("html, body").animate({
-                        scrollTop: $(document).height()
-                    }, 1000);
+                        d3.select("#departmentName").text(departmentName).classed("hidden", false);
+                        d3.select("#departmentNumber").text(departmentNumber).classed("hidden", false); // Affichage du numéro du département
+                        d3.select("#departmentNumberContainer").classed("hidden", false); // Affichage du conteneur du numéro du département
+                        d3.select("#departmentImage").attr("src", departmentImageUrl).classed("hidden", false);
+                        d3.select(this).style("fill", "red");
+                    }
                 })
                 .on("mouseout", function() {
-                    d3.select("#departmentName").text("").classed("hidden", true);
-                    d3.select("#departmentNumber").text("").classed("hidden", true); // Masquage du numéro du département
-                    d3.select("#departmentNumberContainer").classed("hidden", true); // Masquage du conteneur du numéro du département
-                    d3.select("#departmentImage").attr("src", "").classed("hidden", true);
-                    d3.select("#departmentContent").classed("hidden", true); // Masquer le contenu du département
-                    d3.select(this).style("fill", "lightblue");
+                    if (!clicked) {
+                        d3.select("#departmentName").text("").classed("hidden", true);
+                        d3.select("#departmentNumber").text("").classed("hidden", true); // Masquage du numéro du département
+                        d3.select("#departmentNumberContainer").classed("hidden", true); // Masquage du conteneur du numéro du département
+                        d3.select("#departmentImage").attr("src", "").classed("hidden", true);
+                        d3.select(this).style("fill", "lightblue");
+                    }
                 });
         });
 
@@ -121,4 +142,3 @@
 </body>
 
 </html>
-
