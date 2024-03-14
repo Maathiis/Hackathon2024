@@ -116,6 +116,7 @@
                         var departmentImageUrl = "http://localhost:8000/images/" + d.target.__data__.properties.code + ".png";
 
                         d3.select("#departmentName").text(departmentName).classed("hidden", false);
+                        d3.select("#departmentNumber").text(departmentNumber).classed("hidden", false);
                         d3.select("#departmentNumberContainer").classed("hidden", false); 
                         d3.select("#departmentImage").attr("src", departmentImageUrl).classed("hidden", false);
                         d3.select(this).style("fill", "red");
